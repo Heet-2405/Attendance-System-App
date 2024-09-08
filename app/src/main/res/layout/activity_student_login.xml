@@ -5,6 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Student_login">
+    tools:context=".Student_login"
+    android:background="@drawable/back_ground"
+>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
