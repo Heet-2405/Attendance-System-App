@@ -20,6 +20,7 @@ public class Add_class extends AppCompatActivity {
 
     }
 
+    //create a class for showing the toast msg
     public void CreateClass(View view) {
 
         Toast.makeText(getApplicationContext(),"Class has been Created",Toast.LENGTH_LONG).show();
