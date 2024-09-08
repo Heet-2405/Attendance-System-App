@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">demo_atten</string>
+    <string name="faculty">Faculty</string>
+    <string name="student">Student</string>
+    <string name="register">Register</string>
+    <string name="dont_have_account_create_one">Dont\' have Account,Create One</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="login">LogIn</string>
+    <string name="create_class">Create Class</string>
+</resources>
