@@ -1,7 +1,5 @@
 package com.example.demo_atten;
 
-import static android.icu.lang.UCharacter.toUpperCase;
-
 import android.database.Cursor;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
@@ -40,10 +38,10 @@ public class Add_student extends AppCompatActivity {
 
         if (cursor.moveToFirst()) {
             do {
-                String className = toUpperCase(cursor.getString(cursor.getColumnIndexOrThrow("class_name")));
+                String className = cursor.getString(cursor.getColumnIndexOrThrow("class_name"));
                 String semester = cursor.getString(cursor.getColumnIndexOrThrow("semester"));
 
-                classList.add("Subject: " + className + ", Sem: " + semester);
+                classList.add("Class: " + className + ", Semester: " + semester);
             } while (cursor.moveToNext());
         }
 

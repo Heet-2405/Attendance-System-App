@@ -50,6 +50,7 @@ public class Faculty_login extends AppCompatActivity {
         // Check if faculty exists in database
         if (dbHelper.checkFaculty(name, password)) {
             Intent intent = new Intent(Faculty_login.this, Dashboard.class);
+//            intent.putExtra("F_name" , name);
             startActivity(intent);
         } else {
             Toast.makeText(this, "Login failed! Please check your credentials OR Please register first.", Toast.LENGTH_SHORT).show();
