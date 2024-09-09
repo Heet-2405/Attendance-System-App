@@ -3,6 +3,7 @@ package com.example.demo_atten;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -14,6 +15,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class Add_class extends AppCompatActivity {
 
+    EditText etClassName, etSemester;
+    Make_class dbHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,13 +29,25 @@ public class Add_class extends AppCompatActivity {
         ab.setDisplayUseLogoEnabled(true);
         ab.setTitle("ATTENDANCE SYSTEM");
 
+        // Initialize views
+        etClassName = findViewById(R.id.editTextText6);
+        etSemester = findViewById(R.id.editTextText7);
+        dbHelper = new Make_class(this);
     }
 
-
-
-
     public void CreateClass(View view) {
+        String className = etClassName.getText().toString().trim();
+        String semester = etSemester.getText().toString().trim();
 
-        Toast.makeText(getApplicationContext(),"Class has been Created",Toast.LENGTH_LONG).show();
+        // Add class to the database
+        if (!className.isEmpty() && !semester.isEmpty()) {
+            if (dbHelper.addClass(className, semester)) {
+                Toast.makeText(getApplicationContext(), "Class has been Created", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getApplicationContext(), "Class Creation Failed", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(this, "Please fill in both fields", Toast.LENGTH_SHORT).show();
+        }
     }
 }
