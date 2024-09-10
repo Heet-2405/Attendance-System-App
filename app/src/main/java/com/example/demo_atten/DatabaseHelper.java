@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "AttendanceSystem.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
     // Table Name
     private static final String TABLE_FACULTY = "faculty";
@@ -61,6 +61,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return exists;
     }
+
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        // Handle the downgrade logic here. For now, we can drop the table and recreate it.
+        db.execSQL("DROP TABLE IF EXISTS faculty");
+        onCreate(db);
+    }
+
 
 
 

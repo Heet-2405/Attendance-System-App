@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.ActionBar;
@@ -12,20 +13,33 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.util.Objects;
+
 public class Dashboard extends AppCompatActivity {
 
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Set the layout first
         setContentView(R.layout.activity_dashboard);
+
+        // Now retrieve the intent and get the passed data
+        Intent intent = getIntent();
+        String name = intent.getStringExtra("name");
+        String Action_title = name.toUpperCase();
+
+        // Configure the ActionBar after the layout is set
         ActionBar ab = getSupportActionBar();
-        assert ab != null;
-        ab.setIcon(R.drawable.baseline_arrow_back_24);
-        ab.setDisplayShowHomeEnabled(true);
-        ab.setDisplayUseLogoEnabled(true);
-        ab.setTitle("ATTENDANCE SYSTEM");
+        if (ab != null) {
+            ab.setIcon(R.drawable.baseline_arrow_back_24);
+            ab.setDisplayShowHomeEnabled(true);
+            ab.setDisplayUseLogoEnabled(true);
+            ab.setTitle("Hello " + Action_title); // Set the title passed from the previous activity
+        }
+
+
     }
+
 
 
 

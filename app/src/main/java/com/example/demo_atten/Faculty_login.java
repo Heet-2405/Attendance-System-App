@@ -18,7 +18,8 @@ public class Faculty_login extends AppCompatActivity {
 
     EditText etName, etPassword;
     DatabaseHelper dbHelper;
-
+    Intent intent_Login;
+    Intent intent_Register;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +35,8 @@ public class Faculty_login extends AppCompatActivity {
         etName = findViewById(R.id.editTextText);
         etPassword = findViewById(R.id.editTextText2);
         dbHelper = new DatabaseHelper(this);
+
+
     }
 
     public void Login_success(View view) {
@@ -49,20 +52,25 @@ public class Faculty_login extends AppCompatActivity {
 
         // Check if faculty exists in database
         if (dbHelper.checkFaculty(name, password)) {
-            Intent intent = new Intent(Faculty_login.this, Dashboard.class);
-//            intent.putExtra("F_name" , name);
-            startActivity(intent);
+            intent_Login = new Intent(Faculty_login.this, Dashboard.class);
+            intent_Login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            intent_Login.putExtra("name",name);
+            startActivity(intent_Login);
+
+
+
         } else {
             Toast.makeText(this, "Login failed! Please check your credentials OR Please register first.", Toast.LENGTH_SHORT).show();
-//            Intent intent = new Intent(Faculty_login.this, Register.class);
-//            startActivity(intent);
+
         }
     }
 
 
     public void Login_fail(View view) {
-        Intent intent = new Intent(Faculty_login.this, Register.class);
-        startActivity(intent);
+         intent_Register = new Intent(Faculty_login.this, Register.class);
+        startActivity(intent_Register);
+        finish();
 
     }
 }

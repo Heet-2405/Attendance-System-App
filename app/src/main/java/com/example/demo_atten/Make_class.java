@@ -12,8 +12,8 @@ import android.util.Log;
 
 public class Make_class extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "AttendanceSystem.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3; // Set a higher version number
+    private static final String DATABASE_NAME = "AttendanceDB.db";
 
     // Table for classes
     private static final String TABLE_CLASS = "classes";
@@ -81,6 +81,16 @@ public class Make_class extends SQLiteOpenHelper {
         }
         return cursor;
     }
+
+
+
+
+
+
+
+    // Other database code...
+
+
 }
 
 
