@@ -19,12 +19,7 @@ public class Splash_screen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_splash_screen);
-        ActionBar ab = getSupportActionBar();
-        assert ab != null;
-        ab.setIcon(R.drawable.baseline_arrow_back_24);
-        ab.setDisplayShowHomeEnabled(true);
-        ab.setDisplayUseLogoEnabled(true);
-        ab.setTitle("ATTENDANCE SYSTEM");
+
 
         new Handler().postDelayed(new Runnable() {
             @Override

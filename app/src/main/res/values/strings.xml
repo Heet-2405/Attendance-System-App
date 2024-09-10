@@ -9,4 +9,5 @@
     <string name="login">LogIn</string>
     <string name="create_class">Create Class</string>
     <string name="subject">Subject :</string>
+    <string name="logout">LogOut</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.example.demo_atten;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,7 +17,7 @@ import androidx.core.view.WindowInsetsCompat;
 import java.util.Objects;
 
 public class Dashboard extends AppCompatActivity {
-
+    Intent Logout_intent;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -28,10 +29,12 @@ public class Dashboard extends AppCompatActivity {
         String name = intent.getStringExtra("name");
         String Action_title = name.toUpperCase();
 
+
+
         // Configure the ActionBar after the layout is set
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
-            ab.setIcon(R.drawable.baseline_arrow_back_24);
+
             ab.setDisplayShowHomeEnabled(true);
             ab.setDisplayUseLogoEnabled(true);
             ab.setTitle("Hello " + Action_title); // Set the title passed from the previous activity
@@ -62,4 +65,17 @@ public class Dashboard extends AppCompatActivity {
         Intent intent = new Intent(Dashboard.this,View_Attendance.class);
         startActivity(intent);
     }
+
+    public void Logout(View view) {
+        SharedPreferences preferences = getSharedPreferences("login_prefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();  // Clear the login data
+        editor.apply();
+
+        // Go back to login screen
+         Logout_intent = new Intent(Dashboard.this, Faculty_login.class);
+        startActivity(Logout_intent);
+        finish();  // Close dashboard activity
+    }
+
 }

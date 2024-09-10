@@ -19,21 +19,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ActionBar ab = getSupportActionBar();
-        if (ab != null) {
-//            ab.setIcon(R.drawable.baseline_arrow_back_24); // Set your icon
-            ab.setDisplayShowHomeEnabled(true);            // Show home button
-            ab.setDisplayUseLogoEnabled(true);             // Use the logo (icon) as the home button
-            ab.setTitle("ATTENDANCE SYSTEM");              // Set title
-            ab.setDisplayHomeAsUpEnabled(true);            // Enable back button functionality
-        }
+
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle back button click
         if (item.getItemId() == android.R.id.home) {
-            // Perform the back action, such as finishing the activity
-            onBackPressed();  // You can also use finish();
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
