@@ -10,4 +10,6 @@
     <string name="create_class">Create Class</string>
     <string name="subject">Subject :</string>
     <string name="logout">LogOut</string>
+    <string name="select_a_class_to_add_students">Select a Class to Add Students</string>
+    <string name="select_a_class_to_add_a_student">Select a class to add a student</string>
 </resources>
