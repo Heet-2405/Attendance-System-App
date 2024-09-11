@@ -81,16 +81,6 @@ public class Make_class extends SQLiteOpenHelper {
         }
         return cursor;
     }
-
-
-
-
-
-
-
-    // Other database code...
-
-
 }
 
 

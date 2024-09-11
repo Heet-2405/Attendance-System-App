@@ -68,11 +68,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS faculty");
         onCreate(db);
     }
-
-
-
-
-
-
-
 }
