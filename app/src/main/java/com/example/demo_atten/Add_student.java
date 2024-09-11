@@ -1,5 +1,6 @@
 package com.example.demo_atten;
 
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
@@ -19,6 +20,7 @@ public class Add_student extends AppCompatActivity {
     Make_class dbHelper;
     ArrayList<String> classList;
     ArrayAdapter<String> adapter;
+    String facultyName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,23 +30,24 @@ public class Add_student extends AppCompatActivity {
         classListView = findViewById(R.id.classListView);
         dbHelper = new Make_class(this);
 
+        // Get the logged-in faculty's name
+        SharedPreferences preferences = getSharedPreferences("login_prefs", MODE_PRIVATE);
+        facultyName = preferences.getString("facultyName", "");
+
         loadClassList();
     }
 
-    // Method to load the class list from the database
     private void loadClassList() {
         classList = new ArrayList<>();
-        Cursor cursor = dbHelper.getAllClasses();
+        Cursor cursor = dbHelper.getClassesByFaculty(facultyName); // Get classes by faculty
 
         if (cursor.moveToFirst()) {
             do {
                 String className = cursor.getString(cursor.getColumnIndexOrThrow("class_name"));
                 String semester = cursor.getString(cursor.getColumnIndexOrThrow("semester"));
-
                 classList.add("Class: " + className + ", Semester: " + semester);
             } while (cursor.moveToNext());
         }
-
         cursor.close();
 
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, classList);

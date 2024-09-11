@@ -1,5 +1,6 @@
 package com.example.demo_atten;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,19 +18,17 @@ public class Add_class extends AppCompatActivity {
 
     EditText etClassName, etSemester;
     Make_class dbHelper;
+    String facultyName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_class);
 
-        ActionBar ab = getSupportActionBar();
-        assert ab != null;
-        ab.setIcon(R.drawable.baseline_arrow_back_24);
-        ab.setDisplayShowHomeEnabled(true);
-        ab.setDisplayUseLogoEnabled(true);
-        ab.setTitle("ATTENDANCE SYSTEM");
+        // Get the logged-in faculty's name
+        SharedPreferences preferences = getSharedPreferences("login_prefs", MODE_PRIVATE);
+        facultyName = preferences.getString("facultyName", "");
 
-        // Initialize views
         etClassName = findViewById(R.id.editTextText6);
         etSemester = findViewById(R.id.editTextText7);
         dbHelper = new Make_class(this);
@@ -39,9 +38,8 @@ public class Add_class extends AppCompatActivity {
         String className = etClassName.getText().toString().trim();
         String semester = etSemester.getText().toString().trim();
 
-        // Add class to the database
         if (!className.isEmpty() && !semester.isEmpty()) {
-            if (dbHelper.addClass(className, semester)) {
+            if (dbHelper.addClass(className, semester, facultyName)) { // Pass facultyName
                 Toast.makeText(getApplicationContext(), "Class has been Created", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(getApplicationContext(), "Class Creation Failed", Toast.LENGTH_LONG).show();
