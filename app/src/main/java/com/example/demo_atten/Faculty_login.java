@@ -3,38 +3,41 @@ package com.example.demo_atten;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class Faculty_login extends AppCompatActivity {
 
     EditText etName, etPassword;
-    DatabaseHelper dbHelper;
-    Intent intent_Login;
-    Intent intent_Register;
+    FirebaseAuth auth;
+    SharedPreferences preferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_faculty_login2);
 
+        auth = FirebaseAuth.getInstance();
+        preferences = getSharedPreferences("login_prefs", MODE_PRIVATE);
+
         ActionBar ab = getSupportActionBar();
-        assert ab != null;
-        ab.setIcon(R.drawable.baseline_arrow_back_24);
-        ab.setDisplayShowHomeEnabled(true);
-        ab.setDisplayUseLogoEnabled(true);
-        ab.setTitle("ATTENDANCE SYSTEM");
+        if (ab != null) {
+            ab.setIcon(R.drawable.baseline_arrow_back_24);
+            ab.setDisplayShowHomeEnabled(true);
+            ab.setDisplayUseLogoEnabled(true);
+            ab.setTitle("ATTENDANCE SYSTEM");
+        }
 
-
-        SharedPreferences preferences = getSharedPreferences("login_prefs", MODE_PRIVATE);
         boolean isLoggedIn = preferences.getBoolean("isLoggedIn", false);
 
         if (isLoggedIn) {
@@ -47,47 +50,50 @@ public class Faculty_login extends AppCompatActivity {
 
         etName = findViewById(R.id.editTextText);
         etPassword = findViewById(R.id.editTextText2);
-        dbHelper = new DatabaseHelper(this);
-
-
     }
 
     public void Login_success(View view) {
-
-        String name = etName.getText().toString().trim();
+        String email = etName.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
 
-        if (name.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please enter both Name and Password", Toast.LENGTH_SHORT).show();
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Please enter both Email and Password", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Check if faculty exists in database
-        if (dbHelper.checkFaculty(name, password)) {
-            // Save login status
-            SharedPreferences preferences = getSharedPreferences("login_prefs", MODE_PRIVATE);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean("isLoggedIn", true);
-            editor.putString("facultyName", name);
-            editor.apply();
+        auth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Login success
+                            String facultyName = auth.getCurrentUser().getEmail(); // Getting the logged-in user's email
 
-            intent_Login = new Intent(Faculty_login.this, Dashboard.class);
-            intent_Login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent_Login.putExtra("name", name);
-            startActivity(intent_Login);
-            finish();  // Finish login activity to prevent going back to it
+                            // Saving login state and faculty name in SharedPreferences
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putBoolean("isLoggedIn", true);
+                            editor.putString("facultyName", facultyName);
+                            editor.apply();
 
-        } else {
-            Toast.makeText(this, "Login failed! Please check your credentials OR Please register first.", Toast.LENGTH_SHORT).show();
-        }
+                            Toast.makeText(Faculty_login.this, "Login successful", Toast.LENGTH_SHORT).show();
+
+                            // Navigate to Dashboard
+                            Intent intent_login = new Intent(Faculty_login.this, Dashboard.class);
+                            intent_login.putExtra("name", facultyName); // Passing the faculty's email to Dashboard
+                            startActivity(intent_login);
+                            finish();  // Finish login activity
+                        } else {
+                            // Login failed
+                            Toast.makeText(Faculty_login.this, "Login failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
     }
-
-
 
     public void Login_fail(View view) {
-         intent_Register = new Intent(Faculty_login.this, Register.class);
+        Intent intent_Register = new Intent(Faculty_login.this, Register.class);
         startActivity(intent_Register);
         finish();
-
     }
 }
+

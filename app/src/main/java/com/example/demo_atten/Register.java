@@ -1,67 +1,93 @@
 package com.example.demo_atten;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.ActionBar;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.AuthResult;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
+import java.util.Objects;
 
 public class Register extends AppCompatActivity {
 
-    EditText etName, etPassword;
-    Button register;
-    DatabaseHelper dbHelper;
+    private EditText etEmail, etPassword;
 
-
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        ActionBar ab = getSupportActionBar();
-        assert ab != null;
-        ab.setIcon(R.drawable.baseline_arrow_back_24);
-        ab.setDisplayShowHomeEnabled(true);
-        ab.setDisplayUseLogoEnabled(true);
-        ab.setTitle("ATTENDANCE SYSTEM");
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
 
-        etName = findViewById(R.id.editTextText3);
+        // Set up views
+        etEmail = findViewById(R.id.editTextText3);
         etPassword = findViewById(R.id.editTextText5);
-        dbHelper = new DatabaseHelper(this);
+        Button btnRegister = findViewById(R.id.button5);
 
-        register = findViewById(R.id.button5);
 
-        register.setOnClickListener(new View.OnClickListener() {
+        btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                String name = etName.getText().toString();
-                String password = etPassword.getText().toString();
-
-                // Insert faculty details in the database
-                if (dbHelper.registerFaculty(name, password)) {
-                    Toast.makeText(Register.this, "Registration Successful!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(Register.this, Faculty_login.class);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(Register.this, "Registration Failed!", Toast.LENGTH_SHORT).show();
-                }
+            public void onClick(View v) {
+                registerUser();
             }
         });
-
     }
 
+    private void registerUser() {
+        String email = etEmail.getText().toString().trim();
+        String password = etPassword.getText().toString().trim();
+
+        // Check for valid input
+        if (TextUtils.isEmpty(email)) {
+            Toast.makeText(getApplicationContext(), "Enter email!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (TextUtils.isEmpty(password)) {
+            Toast.makeText(getApplicationContext(), "Enter password!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (password.length() < 6) {
+            Toast.makeText(getApplicationContext(), "Password too short, enter minimum 6 characters!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Create a new user with Firebase Authentication
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
 
 
+                        if (task.isSuccessful()) {
+                            // Registration success, update UI with the signed-in user's information
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Toast.makeText(Register.this, "Registration successful!", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(Register.this, Faculty_login.class);
+                            startActivity(intent);
+                            // Optionally, navigate to another activity
+                        } else {
+                            // If registration fails, display a message to the user.
+                            Toast.makeText(Register.this, "Registration failed! " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
 }
 
