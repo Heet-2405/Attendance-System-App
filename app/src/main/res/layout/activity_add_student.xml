@@ -1,26 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <TextView
-        android:id="@+id/classLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/select_a_class_to_add_a_student"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true" />
+        android:text="Select a Class to Add Students"
+        android:textSize="18sp"
+        android:layout_marginBottom="16dp"/>
 
     <ListView
         android:id="@+id/classListView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/classLabel"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp" />
+        android:layout_height="wrap_content" />
 
-</RelativeLayout>
-
-
-
+</LinearLayout>
