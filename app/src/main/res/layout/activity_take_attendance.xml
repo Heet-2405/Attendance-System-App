@@ -5,9 +5,7 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- ListView to display classes -->
 
-    <!-- ListView to display students when a class is selected -->
     <ListView
         android:id="@+id/classListView"
         android:layout_width="match_parent"

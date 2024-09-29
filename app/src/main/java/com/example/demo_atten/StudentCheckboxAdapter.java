@@ -1,46 +1,49 @@
 package com.example.demo_atten;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.ArrayAdapter;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.util.ArrayList;
+import java.util.List;
 
 public class StudentCheckboxAdapter extends ArrayAdapter<Student> {
-    Student student;
-    private final Context context;
-    private final ArrayList<Student> students;
 
-    public StudentCheckboxAdapter(@NonNull Context context, ArrayList<Student> students) {
-        super(context, R.layout.student_list_item, students);
+    private StudentListActivity context;
+    private List<Student> studentList;
+
+    public StudentCheckboxAdapter(StudentListActivity context, List<Student> students) {
+        super(context, 0, students);
         this.context = context;
-        this.students = students;
+        this.studentList = students;
     }
 
-    @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
+        // Inflate custom student list item layout if not already done
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.student_list_item, parent, false);
         }
 
-        student = students.get(position);
+        // Get current student
+        Student student = studentList.get(position);
 
-        // Get references to the views in the layout
+        // Find views in the custom layout
         CheckBox studentCheckBox = convertView.findViewById(R.id.studentCheckBox);
-        TextView studentNameRollTextView = convertView.findViewById(R.id.studentNameRollTextView);
+        TextView studentNameTextView = convertView.findViewById(R.id.studentNameTextView);
+        TextView studentRollNumberTextView = convertView.findViewById(R.id.studentRollNumberTextView);
 
-        // Set the student details in the TextView
-        studentNameRollTextView.setText(student.toString());
+        // Set student name and roll number
+        studentNameTextView.setText(student.getName());
+        studentRollNumberTextView.setText(student.getRollNumber());
 
-        // Handle checkbox selection
+        // Set checkbox state based on whether student is marked present
+        studentCheckBox.setChecked(student.isChecked());
+
+        // Set listener for when checkbox changes
         studentCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             student.setChecked(isChecked);
         });
@@ -48,4 +51,3 @@ public class StudentCheckboxAdapter extends ArrayAdapter<Student> {
         return convertView;
     }
 }
-

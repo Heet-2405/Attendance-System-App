@@ -5,55 +5,66 @@ import androidx.annotation.NonNull;
 public class Student implements Comparable<Student> {
     private String name;
     private String rollNumber;
-    private boolean checked;  // Indicates whether the student is marked as present
+    private boolean checked;
+    private int attendanceCount;
+    private int totalCount;
 
-    // Constructor
     public Student(String name, String rollNumber) {
         this.name = name;
         this.rollNumber = rollNumber;
-        this.checked = false;  // Default value: not present
+        this.checked = false;
+        this.attendanceCount = 0;
+        this.totalCount = 0;
     }
 
-    // Getter for the name
     public String getName() {
         return name;
     }
 
-    // Setter for the name (in case you want to modify it)
     public void setName(String name) {
         this.name = name;
     }
 
-    // Getter for the roll number
     public String getRollNumber() {
         return rollNumber;
     }
 
-    // Setter for the roll number (in case you want to modify it)
     public void setRollNumber(String rollNumber) {
         this.rollNumber = rollNumber;
     }
 
-    // Getter for the "checked" status (whether the student is marked as present)
     public boolean isChecked() {
         return checked;
     }
 
-    // Setter for the "checked" status (to mark the student as present or not)
     public void setChecked(boolean checked) {
         this.checked = checked;
     }
 
-    // Compare students by roll number
-    @Override
-    public int compareTo(Student other) {
-        return this.rollNumber.compareTo(other.rollNumber);  // Sort by roll number
+    public int getAttendanceCount() {
+        return attendanceCount;
     }
 
-    // Custom toString method for displaying the student's name and roll number in a list
+    public void incrementAttendanceCount() {
+        this.attendanceCount++;
+    }
+
+    public int getTotalCount() {
+        return totalCount;
+    }
+
+    public void incrementTotalCount() {
+        this.totalCount++;
+    }
+
+    @Override
+    public int compareTo(Student o) {
+        return this.rollNumber.compareTo(o.getRollNumber());
+    }
+
     @NonNull
     @Override
     public String toString() {
-        return "Name: " + name + ", Roll No: " + rollNumber;
+        return name + " (" + rollNumber + ")";
     }
 }

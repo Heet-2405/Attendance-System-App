@@ -63,8 +63,8 @@ public class Register extends AppCompatActivity {
             return;
         }
 
-        if (password.length() < 6) {
-            Toast.makeText(getApplicationContext(), "Password too short, enter minimum 6 characters!", Toast.LENGTH_SHORT).show();
+        if (password.length() < 3) {
+            Toast.makeText(getApplicationContext(), "Password too short, enter minimum 3 characters!", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -79,7 +79,7 @@ public class Register extends AppCompatActivity {
                             // Registration success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(Register.this, "Registration successful!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(Register.this, Faculty_login.class);
+                            Intent intent = new Intent(Register.this, Dashboard.class);
                             startActivity(intent);
                             // Optionally, navigate to another activity
                         } else {

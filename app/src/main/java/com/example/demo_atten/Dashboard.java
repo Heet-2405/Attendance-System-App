@@ -62,7 +62,7 @@ public class Dashboard extends AppCompatActivity {
     }
 
     public void View_Atten(View view) {
-        Intent intent = new Intent(Dashboard.this,View_Attendance.class);
+        Intent intent = new Intent(Dashboard.this, View_Attendance.class);
         startActivity(intent);
     }
 

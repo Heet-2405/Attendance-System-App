@@ -1,23 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="8dp">
+    android:padding="16dp"
+    android:gravity="center_vertical">
 
-    <!-- Checkbox for marking attendance -->
+    <!-- TextView for displaying the roll number -->
+    <TextView
+        android:id="@+id/studentRollNumberTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Roll No"
+        android:textSize="16sp"
+        android:layout_marginEnd="16dp" />
+
+    <!-- TextView for displaying the student's name -->
+    <TextView
+        android:id="@+id/studentNameTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Student Name"
+        android:textSize="16sp" />
+
+    <!-- CheckBox for marking attendance -->
     <CheckBox
         android:id="@+id/studentCheckBox"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <!-- TextView to display student name and roll number -->
-    <TextView
-        android:id="@+id/studentNameRollTextView"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:text="@string/student_name" />
+        android:text="Present" />
 
 </LinearLayout>

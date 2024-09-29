@@ -13,14 +13,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Add_student extends AppCompatActivity {
 
@@ -31,7 +32,7 @@ public class Add_student extends AppCompatActivity {
     EditText inputName;
     EditText inputRoll;
     String selectedClassName;
-    FirebaseFirestore db;
+    DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,7 @@ public class Add_student extends AppCompatActivity {
         setContentView(R.layout.activity_add_student);
 
         classListView = findViewById(R.id.classListView);
-        db = FirebaseFirestore.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference("Classes");
 
         // Get the logged-in faculty's name from SharedPreferences
         SharedPreferences preferences = getSharedPreferences("login_prefs", MODE_PRIVATE);
@@ -56,30 +57,27 @@ public class Add_student extends AppCompatActivity {
         });
     }
 
-    // Method to load the class list from Firestore for the logged-in faculty
+    // Method to load the class list from Firebase Realtime Database for the logged-in faculty
     private void loadClassList() {
         classList = new ArrayList<>();
 
-        db.collection("Classes")
-                .whereEqualTo("facultyName", facultyName)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        QuerySnapshot result = task.getResult();
-                        if (result != null && !result.isEmpty()) {
-                            for (QueryDocumentSnapshot document : result) {
-                                String className = document.getString("className");
-                                String semester = document.getString("semester");
-                                classList.add("Class: " + className + ", Semester: " + semester);
-                            }
-                            adapter = new ArrayAdapter<>(Add_student.this, android.R.layout.simple_list_item_1, classList);
-                            classListView.setAdapter(adapter);
-                        } else {
-                            Log.d("AddStudent", "No classes found for this faculty.");
-                            Toast.makeText(getApplicationContext(), "No classes found for this faculty.", Toast.LENGTH_LONG).show();
+        databaseReference.orderByChild("facultyName").equalTo(facultyName)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        classList.clear(); // Clear the list before adding new data
+                        for (DataSnapshot classSnapshot : dataSnapshot.getChildren()) {
+                            String className = classSnapshot.child("className").getValue(String.class);
+                            String semester = classSnapshot.child("semester").getValue(String.class);
+                            classList.add("Class: " + className + ", Semester: " + semester);
                         }
-                    } else {
-                        Log.d("AddStudent", "Error getting documents: ", task.getException());
+                        adapter = new ArrayAdapter<>(Add_student.this, android.R.layout.simple_list_item_1, classList);
+                        classListView.setAdapter(adapter);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.d("AddStudent", "Error retrieving classes: " + databaseError.getMessage());
                         Toast.makeText(getApplicationContext(), "Error retrieving classes.", Toast.LENGTH_LONG).show();
                     }
                 });
@@ -129,54 +127,40 @@ public class Add_student extends AppCompatActivity {
         // Extract the class name from selectedClassName (e.g., "Class: Mathematics, Semester: Fall 2024")
         String className = selectedClassName.split(",")[0].replace("Class: ", "").trim();
 
-        db.collection("Classes")
-                .whereEqualTo("facultyName", facultyName)
-                .whereEqualTo("className", className)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        databaseReference.orderByChild("className").equalTo(className)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                            // Get the document ID of the class
-                            String documentId = task.getResult().getDocuments().get(0).getId();
-                            DocumentReference classRef = db.collection("Classes").document(documentId);
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            for (DataSnapshot classSnapshot : dataSnapshot.getChildren()) {
+                                String classId = classSnapshot.getKey(); // Get the unique class ID
 
-                            // Add the student to the "students" subcollection
-                            classRef.collection("students")
-                                    .add(new Student(studentName, rollNumber))
-                                    .addOnSuccessListener(documentReference -> {
-                                        Toast.makeText(getApplicationContext(), "Student added to " + className, Toast.LENGTH_LONG).show();
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        Toast.makeText(getApplicationContext(), "Failed to add student", Toast.LENGTH_LONG).show();
-                                    });
+                                // Create student data with attendance counts
+                                Map<String, Object> studentData = new HashMap<>();
+                                studentData.put("name", studentName);
+                                studentData.put("rollNumber", rollNumber);
+                                studentData.put("Total_cnt", 0); // Initialize total count to 0
+                                studentData.put("attendance_cnt", 0); // Initialize attendance count to 0
+
+                                // Add the student to the "students" node under the specific class
+                                assert classId != null;
+                                databaseReference.child(classId).child("students").child(rollNumber).setValue(studentData)
+                                        .addOnSuccessListener(aVoid -> {
+                                            Toast.makeText(getApplicationContext(), "Student added to " + className, Toast.LENGTH_LONG).show();
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Toast.makeText(getApplicationContext(), "Failed to add student", Toast.LENGTH_LONG).show();
+                                        });
+                            }
                         } else {
                             Toast.makeText(getApplicationContext(), "Class not found", Toast.LENGTH_LONG).show();
                         }
                     }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.d("AddStudent", "Error adding student: " + databaseError.getMessage());
+                    }
                 });
-    }
-
-    // Inner class for Student
-    public static class Student {
-        private String name;
-        private String rollNumber;
-
-        public Student() {
-            // Default constructor required for Firestore
-        }
-
-        public Student(String name, String rollNumber) {
-            this.name = name;
-            this.rollNumber = rollNumber;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getRollNumber() {
-            return rollNumber;
-        }
     }
 }
