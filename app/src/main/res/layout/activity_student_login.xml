@@ -2,11 +2,51 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/editTextName"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Student_login"
-    android:background="@drawable/back_ground"
->
+    android:background="@drawable/back_ground">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/editTextName"
+        android:layout_width="226dp"
+        android:layout_height="67dp"
+        android:ems="10"
+        android:hint="Enter Name"
+        android:inputType="text"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.237" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/editTextRollNumber"
+        android:layout_width="227dp"
+        android:layout_height="75dp"
+        android:ems="10"
+        android:hint="Enter Roll N."
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.396" />
+
+    <Button
+        android:id="@+id/studentlogin"
+        android:layout_width="109dp"
+        android:layout_height="51dp"
+        android:text="Login"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.607" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
