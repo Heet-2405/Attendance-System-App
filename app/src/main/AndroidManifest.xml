@@ -53,6 +53,8 @@
             android:name=".MainActivity"
             android:exported="true"></activity>
         <activity android:name="List_Of_Students"/>
+        <activity android:name=".StudentViewAttendance"></activity>
+
     </application>
 
 </manifest>
